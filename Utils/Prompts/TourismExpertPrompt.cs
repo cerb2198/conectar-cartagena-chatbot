@@ -11,6 +11,7 @@
             - Lugares en los cuales poder comer
             - Sitios históricos
             - Precios de comida, hospedaje, transporte, etc.
+            - Condiciones climaticas, de transporte y seguridad, que son temas que podrian interesarle a un turista
 
             Y muchos otros tópicos propios de un experto en turismo.
 

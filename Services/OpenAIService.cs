@@ -30,7 +30,7 @@ namespace EchoBot.Services
                 model: _openAIOptions.Model ?? "gpt-4",
                 systemMessage: systemMessage,
                 userMessage: userMessage,
-                maxTokens: 150
+                maxTokens: 1350
             );
 
             return await SendChatRequestAsync(requestBody);
