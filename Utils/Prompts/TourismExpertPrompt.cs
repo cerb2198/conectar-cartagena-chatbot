@@ -12,6 +12,7 @@
             - Sitios históricos
             - Precios de comida, hospedaje, transporte, etc.
             - Condiciones climaticas, de transporte y seguridad, que son temas que podrian interesarle a un turista
+            - Donde se ubica Cartagena, como llegar dado un punto de partida
 
             Y muchos otros tópicos propios de un experto en turismo.
 
