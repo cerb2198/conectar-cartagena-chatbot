@@ -1,6 +1,9 @@
 ﻿// Copyright (c) Microsoft Corporation. All rights reserved.
 // Licensed under the MIT License.
 
+using EchoBot.Bots;
+using EchoBot.Models.Options;
+using EchoBot.Services;
 using Microsoft.AspNetCore.Builder;
 using Microsoft.AspNetCore.Hosting;
 using Microsoft.Bot.Builder;
@@ -9,7 +12,6 @@ using Microsoft.Bot.Connector.Authentication;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 
-using Microsoft.BotBuilderSamples.Bots;
 using Microsoft.Extensions.Hosting;
 
 namespace Microsoft.BotBuilderSamples
@@ -26,10 +28,15 @@ namespace Microsoft.BotBuilderSamples
         // This method gets called by the runtime. Use this method to add services to the container.
         public void ConfigureServices(IServiceCollection services)
         {
+            // Registrar OpenAIOptions usando el Options Pattern
+            services.Configure<OpenAIOptions>(Configuration.GetSection("OpenAIOptions"));
+
             services.AddHttpClient().AddControllers().AddNewtonsoftJson(options =>
             {
                 options.SerializerSettings.MaxDepth = HttpHelper.BotMessageSerializerSettings.MaxDepth;
             });
+
+            services.AddSingleton<OpenAIService>();
 
             // Create the Bot Framework Authentication to be used with the Bot Adapter.
             services.AddSingleton<BotFrameworkAuthentication, ConfigurationBotFrameworkAuthentication>();
@@ -38,7 +45,7 @@ namespace Microsoft.BotBuilderSamples
             services.AddSingleton<IBotFrameworkHttpAdapter, AdapterWithErrorHandler>();
 
             // Create the bot as a transient. In this case the ASP Controller is expecting an IBot.
-            services.AddTransient<IBot, EchoBot>();
+            services.AddTransient<IBot, PevaarChatBot>();
         }
 
         // This method gets called by the runtime. Use this method to configure the HTTP request pipeline.
