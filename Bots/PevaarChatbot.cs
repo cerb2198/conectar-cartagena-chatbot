@@ -10,6 +10,15 @@ namespace EchoBot.Bots
     public class PevaarChatBot : ActivityHandler
     {
         private readonly OpenAIService _openAiService;
+        private static readonly Dictionary<string, string> WelcomeMessages = new Dictionary<string, string>
+{
+    { "es", "¡Bienvenido a tu agente virtual de turismo a Cartagena! ¿En qué te puedo ayudar?" },
+    { "en", "Welcome to your virtual tourism agent for Cartagena! How can I assist you?" },
+    { "fr", "Bienvenue chez votre agent virtuel de tourisme pour Carthagène ! Comment puis-je vous aider ?" },
+    { "it", "Benvenuto al tuo agente virtuale di turismo per Cartagena! Come posso aiutarti?" }
+};
+
+        private string selectedLanguage = "es";
 
         public PevaarChatBot(OpenAIService openAiService)
         {
@@ -18,12 +27,11 @@ namespace EchoBot.Bots
 
         protected override async Task OnMembersAddedAsync(IList<ChannelAccount> membersAdded, ITurnContext<IConversationUpdateActivity> turnContext, CancellationToken cancellationToken)
         {
-            var welcomeText = "¡Bienvenido a Pevaar Software Factory! ¿En qué podemos ayudarte hoy?";
             foreach (var member in membersAdded)
             {
                 if (member.Id != turnContext.Activity.Recipient.Id)
                 {
-                    await turnContext.SendActivityAsync(MessageFactory.Text(welcomeText), cancellationToken);
+                    await SendLanguageChoiceCardAsync(turnContext, cancellationToken);
                 }
             }
         }
@@ -32,45 +40,36 @@ namespace EchoBot.Bots
         {
             var userMessage = turnContext.Activity.Text;
 
-            var prompt = $"\"{userMessage}\"\n" +
-                         "Teniendo en cuenta que el texto anterior fue escrito por una persona para un chatbot ¿cual es la intencion del mensaje?\n" +
-                         "1. Enviar un correo a un asesor de ventas de Pevaar\n" +
-                         "2. Apartar una cita/llamada con un agente de ventas\n" +
-                         "3. Otra acción.\n" +
-                         "Responde en el siguiente formato: \"Respuesta {NumeroOpcionRespuestaCorrecta}\"";
-
-            var intentResult = await _openAiService.GetIntentAsync(prompt);
-
-            switch (intentResult)
+            if (userMessage.ToLower() == "es" || userMessage.ToLower() == "en" || userMessage.ToLower() == "fr" || userMessage.ToLower() == "it")
             {
-                case "Respuesta 1":
-                    await SendSalesEmailFlow(turnContext, cancellationToken);
-                    break;
-                case "Respuesta 2":
-                    await ScheduleCallFlow(turnContext, cancellationToken);
-                    break;
-                default:
-                    await ProcessGenerativeFlow(userMessage, turnContext, cancellationToken);
-                    break;
+                selectedLanguage = userMessage.ToLower();
+                await turnContext.SendActivityAsync(MessageFactory.Text(WelcomeMessages[selectedLanguage]), cancellationToken);
+            }
+            else
+            {
+                var assistantResponse = await _openAiService.GetTourismResponseAsync(userMessage);
+
+                await turnContext.SendActivityAsync(assistantResponse, null, null, cancellationToken);
             }
         }
 
-        private async Task SendSalesEmailFlow(ITurnContext<IMessageActivity> turnContext, CancellationToken cancellationToken)
+        private async Task SendLanguageChoiceCardAsync(ITurnContext turnContext, CancellationToken cancellationToken)
         {
-            await turnContext.SendActivityAsync("Por favor proporciona tu nombre, el correo electrónico y la empresa que representas para enviar el correo al asesor de ventas.", null, null, cancellationToken);
-            // Aquí puedes agregar un flujo para capturar y procesar la información.
-        }
+            // Crear tarjetas de idioma
+            var card = new HeroCard
+            {
+                Title = "Selecciona tu idioma / Select your language / Sélectionnez votre langue / Seleziona la tua lingua",
+                Buttons = new List<CardAction>
+                {
+                    new CardAction(ActionTypes.ImBack, "Español", value: "es"),
+                    new CardAction(ActionTypes.ImBack, "English", value: "en"),
+                    new CardAction(ActionTypes.ImBack, "Français", value: "fr"),
+                    new CardAction(ActionTypes.ImBack, "Italiano", value: "it")
+                }
+            };
 
-        private async Task ScheduleCallFlow(ITurnContext<IMessageActivity> turnContext, CancellationToken cancellationToken)
-        {
-            await turnContext.SendActivityAsync("Para apartar una cita/llamada, por favor proporciona la fecha y hora preferida, así como tu nombre y correo electrónico.", null, null, cancellationToken);
-            // Aquí puedes agregar un flujo para programar la llamada.
-        }
-
-        private async Task ProcessGenerativeFlow(string userMessage, ITurnContext<IMessageActivity> turnContext, CancellationToken cancellationToken)
-        {
-            var generativeResponse = await _openAiService.GetGenerativeResponseAsync(userMessage);
-            await turnContext.SendActivityAsync(generativeResponse, null, null, cancellationToken);
+            var reply = MessageFactory.Attachment(card.ToAttachment());
+            await turnContext.SendActivityAsync(reply, cancellationToken);
         }
     }
 }

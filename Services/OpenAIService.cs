@@ -7,6 +7,7 @@ using System;
 using System.Text.Json;
 using System.Collections.Generic;
 using System.Text.Json.Serialization;
+using EchoBot.Utils.Prompts;
 
 namespace EchoBot.Services
 {
@@ -21,23 +22,14 @@ namespace EchoBot.Services
             _openAIOptions = options.Value ?? throw new ArgumentNullException(nameof(options));
         }
 
-        public async Task<string> GetIntentAsync(string prompt)
+        public async Task<string> GetTourismResponseAsync(string userMessage)
         {
+            // Usamos el prompt especializado como mensaje del sistema
+            var systemMessage = TourismExpertPrompt.GetSystemMessage();
+
             var requestBody = CreateChatRequestBody(
                 model: _openAIOptions.Model ?? "gpt-4",
-                systemMessage: "Eres un asistente que ayuda a identificar intenciones.",
-                userMessage: prompt,
-                maxTokens: 50
-            );
-
-            return await SendChatRequestAsync(requestBody);
-        }
-
-        public async Task<string> GetGenerativeResponseAsync(string userMessage)
-        {
-            var requestBody = CreateChatRequestBody(
-                model: _openAIOptions.Model ?? "gpt-4",
-                systemMessage: "Eres un asistente que responde a las preguntas del usuario.",
+                systemMessage: systemMessage,
                 userMessage: userMessage,
                 maxTokens: 150
             );
@@ -66,7 +58,7 @@ namespace EchoBot.Services
             }
 
             var result = JsonSerializer.Deserialize<ChatCompletionResponse>(responseBody);
-            return result?.Choices?[0]?.Message?.Content?.Trim() ?? string.Empty;
+            return result?.Choices?[0]?.Message?.Content?.Trim() ?? "Error al procesar la respuesta.";
         }
 
         private object CreateChatRequestBody(string model, string systemMessage, string userMessage, int maxTokens)
