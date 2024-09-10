@@ -24,7 +24,6 @@ namespace EchoBot.Services
 
         public async Task<string> GetTourismResponseAsync(string userMessage)
         {
-            // Usamos el prompt especializado como mensaje del sistema
             var systemMessage = TourismExpertPrompt.GetSystemMessage();
 
             var requestBody = CreateChatRequestBody(
