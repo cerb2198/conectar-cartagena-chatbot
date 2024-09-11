@@ -7,7 +7,6 @@ using System;
 using System.Text.Json;
 using System.Collections.Generic;
 using System.Text.Json.Serialization;
-using EchoBot.Utils.Prompts;
 
 namespace EchoBot.Services
 {
@@ -15,20 +14,22 @@ namespace EchoBot.Services
     {
         private readonly HttpClient _httpClient;
         private readonly OpenAIOptions _openAIOptions;
+        private readonly LanguageService _languageService;
 
-        public OpenAIService(HttpClient httpClient, IOptions<OpenAIOptions> options)
+        public OpenAIService(HttpClient httpClient, IOptions<OpenAIOptions> options, LanguageService languageService)
         {
             _httpClient = httpClient;
             _openAIOptions = options.Value ?? throw new ArgumentNullException(nameof(options));
+            _languageService = languageService;
         }
 
-        public async Task<string> GetTourismResponseAsync(string userMessage)
+        public async Task<string> GetTourismResponseAsync(string userMessage, string lang)
         {
-            var systemMessage = TourismExpertPrompt.GetSystemMessage();
+            var promt = _languageService.GetExpertTouristPromt(lang);
 
             var requestBody = CreateChatRequestBody(
                 model: _openAIOptions.Model ?? "gpt-4",
-                systemMessage: systemMessage,
+                systemMessage: promt,
                 userMessage: userMessage,
                 maxTokens: 1350
             );

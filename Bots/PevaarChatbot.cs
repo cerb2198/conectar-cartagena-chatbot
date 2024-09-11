@@ -4,25 +4,23 @@ using Microsoft.Bot.Schema;
 using System.Collections.Generic;
 using System.Threading.Tasks;
 using System.Threading;
+using EchoBot.Models.State;
 
 namespace EchoBot.Bots
 {
     public class PevaarChatBot : ActivityHandler
     {
         private readonly OpenAIService _openAiService;
-        private static readonly Dictionary<string, string> WelcomeMessages = new Dictionary<string, string>
-{
-    { "es", "¡Bienvenido a tu agente virtual de turismo a Cartagena! ¿En qué te puedo ayudar?" },
-    { "en", "Welcome to your virtual tourism agent for Cartagena! How can I assist you?" },
-    { "fr", "Bienvenue chez votre agent virtuel de tourisme pour Carthagène ! Comment puis-je vous aider ?" },
-    { "it", "Benvenuto al tuo agente virtuale di turismo per Cartagena! Come posso aiutarti?" }
-};
+        private readonly LanguageService _languageService;
+        private readonly IStatePropertyAccessor<UserProfile> _userProfileAccessor;
+        private readonly UserState _userState; // Almacena el UserState para guardar los cambios
 
-        private string selectedLanguage = "es";
-
-        public PevaarChatBot(OpenAIService openAiService)
+        public PevaarChatBot(OpenAIService openAiService, LanguageService languageService, UserState userState)
         {
             _openAiService = openAiService;
+            _languageService = languageService;
+            _userState = userState;
+            _userProfileAccessor = userState.CreateProperty<UserProfile>("UserProfile");
         }
 
         protected override async Task OnMembersAddedAsync(IList<ChannelAccount> membersAdded, ITurnContext<IConversationUpdateActivity> turnContext, CancellationToken cancellationToken)
@@ -38,24 +36,35 @@ namespace EchoBot.Bots
 
         protected override async Task OnMessageActivityAsync(ITurnContext<IMessageActivity> turnContext, CancellationToken cancellationToken)
         {
-            var userMessage = turnContext.Activity.Text;
+            // Recupera el perfil del usuario (si no existe, lo crea por defecto)
+            var userProfile = await _userProfileAccessor.GetAsync(turnContext, () => new UserProfile());
 
-            if (userMessage.ToLower() == "es" || userMessage.ToLower() == "en" || userMessage.ToLower() == "fr" || userMessage.ToLower() == "it")
+            var userMessage = turnContext.Activity.Text.ToLower();
+
+            if (userMessage == "es" || userMessage == "en" || userMessage == "fr" || userMessage == "it")
             {
-                selectedLanguage = userMessage.ToLower();
-                await turnContext.SendActivityAsync(MessageFactory.Text(WelcomeMessages[selectedLanguage]), cancellationToken);
+                // Actualiza el idioma en el perfil del usuario
+                userProfile.Language = userMessage;
+
+                // Obtén el mensaje de bienvenida en el idioma seleccionado
+                var welcomeMessage = _languageService.GetWelcomeMessage(userProfile.Language);
+
+                await turnContext.SendActivityAsync(MessageFactory.Text(welcomeMessage), cancellationToken);
             }
             else
             {
-                var assistantResponse = await _openAiService.GetTourismResponseAsync(userMessage);
+                // Utiliza el idioma almacenado en el perfil del usuario
+                var assistantResponse = await _openAiService.GetTourismResponseAsync(userMessage, userProfile.Language);
 
                 await turnContext.SendActivityAsync(assistantResponse, null, null, cancellationToken);
             }
+
+            // Guarda el estado del usuario después de cada interacción
+            await _userState.SaveChangesAsync(turnContext, false, cancellationToken);
         }
 
         private async Task SendLanguageChoiceCardAsync(ITurnContext turnContext, CancellationToken cancellationToken)
         {
-            // Crear tarjetas de idioma
             var card = new HeroCard
             {
                 Title = "Selecciona tu idioma / Select your language / Sélectionnez votre langue / Seleziona la tua lingua",
