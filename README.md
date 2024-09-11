@@ -1,54 +1,33 @@
-﻿# ConectarCartagena Chatbot
+﻿# ConectaCartagena Chatbot
 
-Bot Framework v4 echo bot sample.
+**ConectaCartagena chatbot** es un chatbot avanzado diseñado para interactuar con usuarios de la página web y la app móvil de **Conecta Cartagena**. Su principal objetivo es proporcionar respuestas rápidas y precisas a preguntas relacionadas con el turismo en Cartagena, Colombia. Utiliza capacidades generativas para ofrecer respuestas detalladas y personalizadas en múltiples idiomas, adaptándose a las necesidades del usuario.
 
-This bot has been created using [Bot Framework](https://dev.botframework.com), it shows how to create a simple bot that accepts input from the user and echoes it back.
+## Funcionalidades Clave
 
-## Prerequisites
+- **Respuestas Inteligentes**: El chatbot está equipado con capacidades generativas que le permiten responder a una amplia variedad de preguntas sobre turismo en Cartagena, incluyendo recomendaciones de actividades, lugares históricos, restaurantes, playas y mucho más.
+  
+- **Soporte Multilingüe**: Al inicio de cada conversación, el usuario puede seleccionar su idioma preferido. El chatbot soporta los siguientes cuatro idiomas:
+  - 🇬🇧 Inglés
+  - 🇪🇸 Español
+  - 🇫🇷 Francés
+  - 🇮🇹 Italiano
 
-- [.NET SDK](https://dotnet.microsoft.com/download) version 8.0
+- **Interacción Fluida**: ConectaCartagena está optimizado tanto para la página web como para la app móvil, garantizando una experiencia de usuario sin interrupciones en cualquier plataforma.
 
-  ```bash
-  # determine dotnet version
-  dotnet --version
-  ```
+## Beneficios
 
-## To try this sample
+- **Asistencia en Tiempo Real**: Los usuarios pueden recibir respuestas instantáneas a sus consultas, lo que facilita la planificación y la navegación por Cartagena.
+  
+- **Adaptación a Diferentes Usuarios**: Con el soporte multilingüe, turistas de diversas partes del mundo pueden obtener información en su idioma nativo, mejorando su experiencia en la ciudad.
 
-- Clone the repository
+- **Disponibilidad 24/7**: El chatbot está disponible las 24 horas del día, los 7 días de la semana, ofreciendo una asistencia constante sin importar la hora.
 
-    ```bash
-    git clone https://github.com/cerb2198/conectar-cartagena-chatbot.git
-    ```
+## Uso del Chatbot
 
-- Run the bot from a terminal or from Visual Studio:
+1. **Acceso**: El chatbot puede ser accedido desde la página web oficial de Conecta Cartagena o desde la aplicación móvil.
+2. **Selección de Idioma**: Al iniciar una conversación, el chatbot ofrecerá la opción de seleccionar el idioma preferido.
+3. **Interacción**: Una vez seleccionado el idioma, el usuario puede hacer cualquier pregunta relacionada con el turismo en Cartagena, y el chatbot responderá de forma instantánea.
 
-  A) From a terminal, ensure you're in the conectar-cartagena-chatbot repository
+---
 
-  ```bash
-  # run the bot
-  dotnet run
-  ```
-
-  B) Or from Visual Studio
-
-  - Launch Visual Studio
-  - File -> Open -> Project/Solution
-  - Select `ConectaCartagena.csproj` file
-  - Press `F5` to run the project
-
-## Testing the bot using Bot Framework Emulator
-
-[Bot Framework Emulator](https://github.com/microsoft/botframework-emulator) is a desktop application that allows bot developers to test and debug their bots on localhost or running remotely through a tunnel.
-
-- Install the latest Bot Framework Emulator from [here](https://github.com/Microsoft/BotFramework-Emulator/releases)
-
-### Connect to the bot using Bot Framework Emulator
-
-- Launch Bot Framework Emulator
-- File -> Open Bot
-- Enter a Bot URL of `http://localhost:3978/api/messages`
-
-## Interacting with the bot
-
-Enter text in the emulator.  The text will be echoed back by the bot.
+¡Prueba **ConectaCartagena** y explora Cartagena como nunca antes!
