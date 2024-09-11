@@ -9,8 +9,8 @@
   },
   "messages": {
     "welcome": {
-      "es": "¡Bienvenido a tu agente virtual de turismo a Cartagena! ¿En qué te puedo ayudar?",
-      "en": "Welcome to your virtual tourism agent for Cartagena! How can I assist you?",
+      "es": "¡Bienvenido a tu agente virtual de turismo en Cartagena! ¿En qué te puedo ayudar?",
+      "en": "Welcome to your virtual tourism agent in Cartagena! How can I assist you?",
       "fr": "Bienvenue chez votre agent virtuel de tourisme pour Carthagène ! Comment puis-je vous aider ?",
       "it": "Benvenuto al tuo agente virtuale di turismo per Cartagena! Come posso aiutarti?"
     }
