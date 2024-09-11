@@ -1,4 +1,4 @@
-﻿namespace EchoBot.Models.State
+﻿namespace ConectaCartagena.Models.State
 {
     public class UserProfile
     {

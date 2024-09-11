@@ -1,21 +1,21 @@
-﻿using EchoBot.Services;
+﻿using ConectaCartagena.Services;
 using Microsoft.Bot.Builder;
 using Microsoft.Bot.Schema;
 using System.Collections.Generic;
 using System.Threading.Tasks;
 using System.Threading;
-using EchoBot.Models.State;
+using ConectaCartagena.Models.State;
 
-namespace EchoBot.Bots
+namespace ConectaCartagena.Bots
 {
-    public class PevaarChatBot : ActivityHandler
+    public class ConectaCartagenaChatbot : ActivityHandler
     {
         private readonly OpenAIService _openAiService;
         private readonly LanguageService _languageService;
         private readonly IStatePropertyAccessor<UserProfile> _userProfileAccessor;
         private readonly UserState _userState; // Almacena el UserState para guardar los cambios
 
-        public PevaarChatBot(OpenAIService openAiService, LanguageService languageService, UserState userState)
+        public ConectaCartagenaChatbot(OpenAIService openAiService, LanguageService languageService, UserState userState)
         {
             _openAiService = openAiService;
             _languageService = languageService;

@@ -1,6 +1,6 @@
-﻿using EchoBot.Bots;
-using EchoBot.Models.Options;
-using EchoBot.Services;
+﻿using ConectaCartagena.Bots;
+using ConectaCartagena.Models.Options;
+using ConectaCartagena.Services;
 using Microsoft.AspNetCore.Builder;
 using Microsoft.AspNetCore.Hosting;
 using Microsoft.Bot.Builder;
@@ -10,7 +10,7 @@ using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Hosting;
 
-namespace Microsoft.BotBuilderSamples
+namespace ConectaCartagena
 {
     public class Startup
     {
@@ -21,10 +21,8 @@ namespace Microsoft.BotBuilderSamples
 
         public IConfiguration Configuration { get; }
 
-        // This method gets called by the runtime. Use this method to add services to the container.
         public void ConfigureServices(IServiceCollection services)
         {
-            // Registrar OpenAIOptions usando el Options Pattern
             services.Configure<OpenAIOptions>(Configuration.GetSection("OpenAIOptions"));
 
             services.AddHttpClient().AddControllers().AddNewtonsoftJson(options =>
@@ -45,7 +43,7 @@ namespace Microsoft.BotBuilderSamples
 
             services.AddSingleton<IBotFrameworkHttpAdapter, AdapterWithErrorHandler>();
 
-            services.AddTransient<IBot, PevaarChatBot>();
+            services.AddTransient<IBot, ConectaCartagenaChatbot>();
         }
 
         public void Configure(IApplicationBuilder app, IWebHostEnvironment env)

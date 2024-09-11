@@ -1,10 +1,8 @@
-﻿using EchoBot.Models.Options;
-using Microsoft.Extensions.Configuration;
-using Microsoft.Extensions.Options;
+﻿using ConectaCartagena.Models.Options;
 using Newtonsoft.Json;
 using System.IO;
 
-namespace EchoBot.Services
+namespace ConectaCartagena.Services
 {
     public class LanguageService
     {

@@ -1,6 +1,6 @@
 ﻿using System;
 
-namespace EchoBot.Models.Options
+namespace ConectaCartagena.Models.Options
 {
     public class OpenAIOptions
     {

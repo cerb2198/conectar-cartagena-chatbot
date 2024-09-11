@@ -1,6 +1,4 @@
-﻿using System.Text.Json.Serialization;
-
-namespace EchoBot.Models.Options
+﻿namespace ConectaCartagena.Models.Options
 {
     public class LanguageOptions
     {

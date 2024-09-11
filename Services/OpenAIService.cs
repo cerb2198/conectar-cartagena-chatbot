@@ -1,4 +1,4 @@
-﻿using EchoBot.Models.Options;
+﻿using ConectaCartagena.Models.Options;
 using Microsoft.Extensions.Options;
 using System.Net.Http;
 using System.Text;
@@ -8,7 +8,7 @@ using System.Text.Json;
 using System.Collections.Generic;
 using System.Text.Json.Serialization;
 
-namespace EchoBot.Services
+namespace ConectaCartagena.Services
 {
     public class OpenAIService
     {

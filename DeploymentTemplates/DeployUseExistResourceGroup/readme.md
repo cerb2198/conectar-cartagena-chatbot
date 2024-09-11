@@ -21,8 +21,6 @@ BotApp must be deployed prior to AzureBot.
 - **UMSIResourceGroupName**: (required for UserAssignedMSI)   The User-Assigned Managed Identity Resource Group used for the Bot's Authentication.
 - **tenantId**:   The Azure AD Tenant ID to use as part of the Bot's Authentication. Only used for SingleTenant and UserAssignedMSI app types. Defaults to Subscription Tenant ID.
 
-More info: https://docs.microsoft.com/en-us/azure/bot-service/tutorial-provision-a-bot?view=azure-bot-service-4.0&tabs=userassigned%2Cnewgroup#create-an-identity-resource
-
 ## Parameters for template-AzureBot-with-rg.json:
 
 - **azureBotId**: (required)          The globally unique and immutable bot ID.
@@ -34,5 +32,3 @@ More info: https://docs.microsoft.com/en-us/azure/bot-service/tutorial-provision
 - **UMSIName**: (required for UserAssignedMSI)                The User-Assigned Managed Identity Resource used for the Bot's Authentication.
 - **UMSIResourceGroupName**: (required for UserAssignedMSI)   The User-Assigned Managed Identity Resource Group used for the Bot's Authentication.
 - **tenantId**:  The Azure AD Tenant ID to use as part of the Bot's Authentication. Only used for SingleTenant and UserAssignedMSI app types. Defaults to Subscription Tenant ID.
-
-More info: https://docs.microsoft.com/en-us/azure/bot-service/tutorial-provision-a-bot?view=azure-bot-service-4.0&tabs=userassigned%2Cnewgroup#create-an-identity-resource

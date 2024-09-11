@@ -1,4 +1,4 @@
-﻿# EchoBot
+﻿# ConectarCartagena Chatbot
 
 Bot Framework v4 echo bot sample.
 
@@ -34,7 +34,7 @@ This bot has been created using [Bot Framework](https://dev.botframework.com), i
 
   - Launch Visual Studio
   - File -> Open -> Project/Solution
-  - Select `EchoBot.csproj` file
+  - Select `ConectaCartagena.csproj` file
   - Press `F5` to run the project
 
 ## Testing the bot using Bot Framework Emulator
