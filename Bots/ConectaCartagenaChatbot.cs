@@ -11,16 +11,20 @@ namespace ConectaCartagena.Bots
     public class ConectaCartagenaChatbot : ActivityHandler
     {
         private readonly OpenAIService _openAiService;
+        private readonly OpenAIAssistantService _openAIAssistantService;
         private readonly LanguageService _languageService;
         private readonly IStatePropertyAccessor<UserProfile> _userProfileAccessor;
+        private readonly IStatePropertyAccessor<string> _conversationThreadProfileAccessor;
         private readonly UserState _userState; // Almacena el UserState para guardar los cambios
 
-        public ConectaCartagenaChatbot(OpenAIService openAiService, LanguageService languageService, UserState userState)
+        public ConectaCartagenaChatbot(OpenAIService openAiService, OpenAIAssistantService openAIAssistantService, LanguageService languageService, UserState userState)
         {
             _openAiService = openAiService;
+            _openAIAssistantService = openAIAssistantService;
             _languageService = languageService;
             _userState = userState;
             _userProfileAccessor = userState.CreateProperty<UserProfile>("UserProfile");
+            _conversationThreadProfileAccessor = _userState.CreateProperty<string>("ConversationThread");
         }
 
         protected override async Task OnMembersAddedAsync(IList<ChannelAccount> membersAdded, ITurnContext<IConversationUpdateActivity> turnContext, CancellationToken cancellationToken)
@@ -29,6 +33,11 @@ namespace ConectaCartagena.Bots
             {
                 if (member.Id != turnContext.Activity.Recipient.Id)
                 {
+                    string threadId = await _openAIAssistantService.CreateNewThread();
+                    await _conversationThreadProfileAccessor.SetAsync(turnContext, threadId, cancellationToken);
+
+                    await _userState.SaveChangesAsync(turnContext, false, cancellationToken);
+
                     await SendLanguageChoiceCardAsync(turnContext, cancellationToken);
                 }
             }
@@ -36,31 +45,47 @@ namespace ConectaCartagena.Bots
 
         protected override async Task OnMessageActivityAsync(ITurnContext<IMessageActivity> turnContext, CancellationToken cancellationToken)
         {
-            // Recupera el perfil del usuario (si no existe, lo crea por defecto)
             var userProfile = await _userProfileAccessor.GetAsync(turnContext, () => new UserProfile());
 
             var userMessage = turnContext.Activity.Text.ToLower();
 
             if (userMessage == "es" || userMessage == "en" || userMessage == "fr" || userMessage == "it")
             {
-                // Actualiza el idioma en el perfil del usuario
+                EventFactory.CreateHandoffInitiation(turnContext, new { DummyMessage = "hi"});
+
                 userProfile.Language = userMessage;
 
-                // Obtén el mensaje de bienvenida en el idioma seleccionado
                 var welcomeMessage = _languageService.GetWelcomeMessage(userProfile.Language);
 
                 await turnContext.SendActivityAsync(MessageFactory.Text(welcomeMessage), cancellationToken);
             }
             else
             {
-                // Utiliza el idioma almacenado en el perfil del usuario
-                var assistantResponse = await _openAiService.GetTourismResponseAsync(userMessage, userProfile.Language);
+                string currentThread = await _conversationThreadProfileAccessor.GetAsync(turnContext);
+
+                var assistantResponse = await _openAIAssistantService.GetAnswer(userMessage, userProfile.Language, currentThread);
 
                 await turnContext.SendActivityAsync(assistantResponse, null, null, cancellationToken);
             }
 
-            // Guarda el estado del usuario después de cada interacción
             await _userState.SaveChangesAsync(turnContext, false, cancellationToken);
+        }
+
+        protected override async Task OnMembersRemovedAsync(IList<ChannelAccount> membersRemoved, ITurnContext<IConversationUpdateActivity> turnContext, CancellationToken cancellationToken)
+        {
+            foreach (var member in membersRemoved)
+            {
+                if (member.Id != turnContext.Activity.Recipient.Id)
+                {
+                    string threadId= await _conversationThreadProfileAccessor.GetAsync(turnContext, () => null, cancellationToken);
+                    if (threadId != null)
+                    {
+                        await _openAIAssistantService.DeleteThread(threadId);
+                    }
+
+                    await _conversationThreadProfileAccessor.DeleteAsync(turnContext, cancellationToken);
+                }
+            }
         }
 
         private async Task SendLanguageChoiceCardAsync(ITurnContext turnContext, CancellationToken cancellationToken)

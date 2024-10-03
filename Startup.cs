@@ -36,6 +36,7 @@ namespace ConectaCartagena
             services.AddSingleton<ConversationState>();
 
             services.AddSingleton<OpenAIService>();
+            services.AddSingleton<OpenAIAssistantService>();
 
             services.AddSingleton<LanguageService>();
 
