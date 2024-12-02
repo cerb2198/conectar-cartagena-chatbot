@@ -53,4 +53,4 @@ jobs:
           app-name: 'PevaarChatbotTest'
           slot-name: 'Production'
           package: .
-          publish-profile: ${{ secrets.AZUREAPPSERVICE_PUBLISHPROFILE_8DD73741A80649AD8A880CB54D09D700 }}
+          publish-profile: ${{ secrets.AZUREAPPSERVICE_PUBLISHPROFILE_0FFC80AB830F4FF6920C14E557E25EF3 }}
