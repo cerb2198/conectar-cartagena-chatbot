@@ -50,7 +50,7 @@ jobs:
         id: deploy-to-webapp
         uses: azure/webapps-deploy@v3
         with:
-          app-name: 'PevaarChatbotTest'
+          app-name: 'ConectaCartagenaBotWebApp'
           slot-name: 'Production'
           package: .
           publish-profile: ${{ secrets.AZUREAPPSERVICE_PUBLISHPROFILE_0FFC80AB830F4FF6920C14E557E25EF3 }}
